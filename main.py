@@ -1,12 +1,12 @@
 # app.py
-from flask import Flask, render_template, request
 import os, json
-
-UPLOAD_FOLDER = '/image-upload'
-ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
+from flask import Flask, request, abort
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['MAX_CONTENT_LENGTH'] = 1024 * 1024
+app.config['UPLOAD_EXTENSIONS'] = ['.jpg', '.png', '.gif']
+app.config['UPLOAD_PATH'] = 'image-upload'
 
 # defining a route
 @app.route("/", methods=['GET']) 
@@ -19,28 +19,18 @@ def index():
 @app.route('/predict', methods=['POST'])
 def make_prediction():
   if request.method=='POST':
-    # get uploaded image file if it exists
-    file = request.files['image']
-    if not file: return json.dumps({"status": "No image is detect"})
+    file_upload = request.files['image']
+
+    if not file_upload: return json.dumps({"status": "No image is detect"})
     
-    # read in file as raw pixels values
-    # (ignore extra alpha channel and reshape as its a single image)
+    filename = secure_filename(file_upload.filename)
+    if filename != '':
+      file_ext = os.path.splitext(filename)[1]
+      if file_ext not in app.config['UPLOAD_EXTENSIONS']:
+        abort(400)
+      file_upload.save(os.path.join(app.config['UPLOAD_PATH'], filename))
     
-    # img = misc.imread(file)
-    # img = img[:,:,:3]
-    # img = img.reshape(1, -1)
-
-    # make prediction on new image
-    # prediction = model.predict(img)
-
-    # squeeze value from 1D array and convert to string for clean return
-    # label = str(np.squeeze(prediction))
-
-    # switch for case where label=10 and number=0
-    # if label=='10': label='0'
-    file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
-
-    return json.dumps({"status": "ok"})
+    return json.dumps({"status": "Ok"})
 
 if __name__ == '__main__':
     # app.run()
