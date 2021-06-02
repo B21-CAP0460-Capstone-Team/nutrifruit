@@ -1,6 +1,6 @@
 # app.py
 import os, json
-from flask import Flask, request, abort
+from flask import Flask, request, abort, send_from_directory
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
@@ -31,6 +31,11 @@ def make_prediction():
       file_upload.save(os.path.join(app.config['UPLOAD_PATH'], filename))
     
     return json.dumps({"status": "Ok"})
+
+@app.route("/image-upload/<path:path>")
+def static_dir(path):
+    # return 'Subpath %s' % escape(path)
+    return send_from_directory("image-upload", path)
 
 if __name__ == '__main__':
     # app.run()
