@@ -12,10 +12,10 @@ app.config['UPLOAD_PATH'] = 'image-upload'
 @app.route("/", methods=['GET']) 
 def index(): 
     # returning a response
-    mydata = {
-        ["name": "gunawan", "age": 23],
-        ["name": "hafet", "age": 23]
-    }
+    mydata = [
+        { "name": "gunawan", "age": 23 },
+        {"name": "hafet", "age": 23}
+    ]
 
     return json.dumps(mydata)
 
