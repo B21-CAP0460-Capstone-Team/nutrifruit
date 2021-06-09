@@ -1,6 +1,6 @@
 # app.py
 import os, json
-from flask import Flask, request, abort, send_from_directory
+from flask import Flask, request, abort, send_from_directory, jsonify
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
@@ -12,9 +12,9 @@ app.config['UPLOAD_PATH'] = 'image-upload'
 @app.route("/", methods=['GET']) 
 def index(): 
     # returning a response
-    mydata = {"name": "gunawan", "age": 23}
+    mydata = {"name": "apple", "vitamin C": "70%", "water": "85%"}
 
-    return json.dumps(mydata)
+    return jsonify(mydata)
 
 @app.route('/predict', methods=['POST'])
 def make_prediction():
