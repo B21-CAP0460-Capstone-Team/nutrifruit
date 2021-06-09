@@ -30,7 +30,13 @@ def make_prediction():
         abort(400)
       file_upload.save(os.path.join(app.config['UPLOAD_PATH'], filename))
     
-    return json.dumps({"status": "Ok"})
+    return json.dumps({
+      "status": "success",
+      "name": "apple", 
+      "vitamin C": "70%", 
+      "water": "85%",
+      "image": "http://34.101.158.19/image-upload/" + filename
+    })
 
 @app.route("/image-upload/<path:path>")
 def static_dir(path):
